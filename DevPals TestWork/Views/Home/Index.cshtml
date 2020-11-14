@@ -1,0 +1,289 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 style="color:#0094ff" class="display-4">Profitable bank</h1>
+    <h2 style="color:lightblue">"Able bank – profit"</h2>
+</div>
+<div class="loginForm" id="loginForm" style="
+    background-color: aliceblue;
+        width: 358px;
+        height: 372px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 15px;
+        text-align: center;
+        margin: 0 auto;
+">
+
+    <label style="margin-top: 32px; font-size: x-large;">Welcome</label>
+    <div style="margin-top: 56px;">
+        <input style="
+        width: 300px;
+        margin: -5px auto;
+        border-radius: 5px;"
+               type="text" id="UserName" placeholder="LoginName" />
+
+        <input style="
+        width: 300px;
+        margin: 36px auto;
+        border-radius: 5px;"
+               type="password" id="Pin" placeholder="Pin" />
+
+        <button onclick="Login()">Submit</button>
+    </div>
+</div>
+<div class="loginForm1" id="loginForm1" style="
+    background-color: aliceblue;
+        width: 358px;
+        height: 372px;
+        display: none;
+        flex-direction: column;
+        border-radius: 15px;
+        text-align: center;
+        margin: 0px 375px;
+        position: absolute;
+        z-index: 4;
+">
+
+    <label style="margin-top: 32px; font-size: x-large;">Welcome</label>
+    <div style="margin-top: 56px;">
+
+        <input style="
+        width: 300px;
+        margin: 36px auto;
+        border-radius: 5px;"
+               type="password" id="Pin" placeholder="Pin" />
+
+        <button id="submit" onclick="ActionInvoker(Dictionary.method)">Submit</button>
+    </div>
+</div>
+<div class="OtherSum" id="OtherSum" style="
+    background-color: aliceblue;
+        width: 358px;
+        height: 372px;
+        display: none;
+        flex-direction: column;
+        border-radius: 15px;
+        text-align: center;
+        margin: 0px 375px;
+        position: absolute;
+        z-index: 4;
+">
+
+    <label style="margin-top: 32px; font-size: x-large;">Write the desired amount</label>
+    <div style="margin-top: 56px;">
+
+        <input style="
+        width: 300px;
+        margin: 36px auto;
+        border-radius: 5px;"
+               type="number"
+               id="WithdrawnCash"
+               placeholder="Sum" />
+
+        <button onclick="CashedOut(document.getElementById('WithdrawnCash').value)">Payment(Cash)</button>
+        <button onclick="Back1()">Back</button>
+    </div>
+</div>
+
+<div class="operationMenu" id="operationMenu"
+     style="
+    background-color: aliceblue;
+    width: 358px;
+    height: 372px;
+    display: none;
+    border-radius: 15px;
+    text-align: center;
+    margin: 0 auto; ">
+
+    <label style="margin-top: 32px; font-size: x-large;">Operations Menu</label>
+    <div>
+        <label>By:</label>
+        <label id="username"></label>
+    </div>
+
+    <div style="
+    display: flex;
+        flex-direction: column;
+        margin-top: 56px;
+">
+        <button style="width: 189px; border-radius: 8px; margin: 0 auto;" onclick="OpenForm()">Balance</button>
+        <button style="width: 189px; border-radius: 8px; margin: 29px auto;" onclick="OpenForm1()">Cash</button>
+    </div>
+</div>
+<div class="CashedOutMenu" id="cashedOutMenu"
+     style="
+    background-color: aliceblue;
+    width: 358px;
+    height: 372px;
+    display: none;
+    border-radius: 15px;
+    text-align: center;
+    margin: 0 auto; ">
+
+    <label style="margin-top: 32px; font-size: x-large;">Monetary transactions</label>
+    <label id="username"></label>
+    <div style="
+    display: flex;
+        flex-direction: column;
+        margin-top: 24px;
+">
+        <button style="width: 86px; border-radius: 8px; margin: 0 ;"onclick="Back()">Back</button>
+        <button style="width: 189px; border-radius: 8px; margin: 29px auto;" onclick="CashedOut(50)">50</button>
+        <button style="width: 189px; border-radius: 8px; margin: 0 auto;" onclick="CashedOut(100)">100</button>
+        <button style="width: 189px; border-radius: 8px; margin: 29px auto;" onclick="CashedOut(200)">200</button>
+        <button style="width: 189px; border-radius: 8px; margin: 0 auto;" onclick="OpenForm3()">Other Sum</button>
+    </div>
+</div>
+<div class="CashedOutMenu" id="history"
+     style="
+    background-color: aliceblue;
+    width: 358px;
+    display: none;
+    border-radius: 15px;
+    text-align: center;
+    margin: 0 auto; ">
+    <label style="margin-top: 32px; font-size: x-large;">Transaction history</label>
+    <div style="width: 350px; display: flex,; flex-direction: column">
+    </div>   
+    </div>
+
+
+<script>
+    var Dictionary = {};
+
+   
+   
+    function ActionInvoker(method) {
+
+        if (!Login()) {
+            alert("Wrong pin code");
+            return;
+        }
+
+        method();
+
+    }
+    function Login() {
+        var UserName = document.getElementById("UserName").value;
+        var Pin = document.getElementById("Pin").value;
+        var IsPassed = false;
+        var loginform = document.getElementById("loginForm");
+        var operationMenu = document.getElementById("operationMenu");
+
+        $.ajax({
+            async: false,
+            url: `../../../api/WebApi/Login?UserName=${UserName}&Pin=${Pin}`,
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+                200: function () {
+                    alert("Сonfirmed!");
+                    if (loginform.style.display == "flex" && operationMenu.style.display == "none") {
+                        loginform.style.display = "none";
+                        operationMenu.style.display = "block";
+                    }
+
+                    window.document.getElementById("username").textContent = UserName;
+                    IsPassed = true;
+                },
+                400: function (error) {
+                    alert("Wrong UserName or pin code");
+                }
+            }
+        });
+        console.log(IsPassed);
+        return IsPassed;
+    }
+    function OpenForm() {
+        document.getElementById("loginForm1").style.display = "block";
+        Dictionary.method = GetBalance;
+        //document.getElementById("Pin").value = "";
+    }
+    function OpenForm1() {
+        document.getElementById("loginForm1").style.display = "block";
+        Dictionary.method = OpenCashedOutForm;
+        //document.getElementById("Pin").value = "";
+    }
+    function OpenForm3() {
+        document.getElementById("OtherSum").style.display = "block";
+        Dictionary.method = OpenCashedOutForm;
+    }
+    function Back()
+    {
+        document.getElementById("operationMenu").style.display = "block";
+        document.getElementById("cashedOutMenu").style.display = "none";
+        document.getElementById("loginForm1").style.display = "none";
+    }
+    function Back1()
+    {
+        document.getElementById("OtherSum").style.display = "none";
+        document.getElementById("cashedOutMenu").style.display = "block";
+        document.getElementById("loginForm1").style.display = "none";
+    }
+    function OpenCashedOutForm() {
+        document.getElementById("operationMenu").style.display = "none";
+        document.getElementById("loginForm1").style.display = "none";
+        document.getElementById("cashedOutMenu").style.display = "block";
+
+    }
+    function GetBalance() {
+        var UserName = document.getElementById("username").innerText;
+        $.ajax({
+            url: `../../../api/WebApi/GetBalance?UserName=${UserName}`,
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                window.document.getElementById("loginForm1").style.display = "none";
+                alert(data);
+            },
+            error: function () {
+                alert(error.responseText);
+            }
+        });
+    }
+    function CloseFunction()
+    {
+        document.getElementById("OtherSum").style.display = "none";
+        document.getElementById("cashedOutMenu").style.display = "none";
+        document.getElementById("operationMenu").style.display = "none";
+        document.getElementById("loginForm1").style.display = "none";
+        document.getElementById("history").style.display = "none";
+        document.getElementById("UserName").value = "";
+        document.getElementById("loginForm").style.display = "block";
+    }
+    function CashedOut(WithdrawnCash) {
+        var UserName = document.getElementById("username").innerText;
+        var history = document.getElementById("history");
+        $.ajax({
+            url: `../../../api/WebApi/CashedOut?WithdrawnCash=${WithdrawnCash}&UserName=${UserName}`,
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+                //window.document.getElementById("loginForm1").style.display = "none";
+                alert(data.resultMessage);
+                history.style.display = "block";
+                for (var i = 1; i < data.history.length; i++)
+                {
+                    console.log(data.history[i]);
+                    history.innerHTML += '<span style="width: 358px;display: block;">' + '№:' + ' ' + data.history[i].id + ' ' + ' ' + ' ' + 'Sum:' + ' ' + data.history[i].withdrawnCash + '' + ' ' + ' ' + 'Status:' + ' '+ data.history[i].operationState + '</span>';
+                  
+                }
+                setTimeout(CloseFunction, 10000)
+            },
+            error: function () {
+                alert("Error");
+            }
+        });
+
+    }
+
+
+
+</script>
